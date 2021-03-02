@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Language Features Matter: Effective Language Representations for Vision-Language Tasks</title>
+
+    <!-- Bootstrap -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/template.css" rel="stylesheet">
+  </head>
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation" style="background-color:#34a853;border-color:#34a853">    
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+      	      <li role="presentation"> <a href="#overview">Overview</a></li>
+      	      <li role="presentation"> <a href="#dataset">Dataset + Code</a></li>
+              <!-- <li role="presentation"> <a href="#code">Code</li> -->
+              <li role="presentation"> <a href="#refs">Reference</a> </li>
+              <li role="presentation"> <a href="./index.html#contact">Contact</a></li>
+            </ul>
+          </div>
+    </nav>
+
+    <div class="container">
+
+    <div class="home-intro" style="padding: 5% 10%">
+      <div class="row">
+          <h1 align="center">Language Features Matter: <br> Effective Language Representations for Vision-Language Tasks</h1>
+      </div>
+
+          <div class="project-page">
+          <a name="abstract"></a>
+          <center><h2>Abstract</h2></center>
+          <p class="text-justify">Shouldn't language and vision features be treated equally in vision-language (VL) tasks? Many VL approaches treat the language component as an afterthought, using simple language models that are either built upon fixed word embeddings trained on text-only data or are learned from scratch. We believe that language features deserve more attention, and conduct experiments which compare different word embeddings, language models, and  embedding augmentation steps on five common VL tasks: image-sentence retrieval, image captioning, visual question answering, phrase grounding, and text-to-clip retrieval. 
+Our experiments provide some striking results; an average embedding language model outperforms an LSTM on retrieval-style tasks; state-of-the-art representations such as BERT perform relatively poorly on vision-language tasks. From this comprehensive set of experiments we  propose a set of best practices for incorporating the language component of VL tasks. To further elevate language features, we also show that knowledge in vision-language problems can be transferred across tasks to gain performance with multi-task training. This multi-task training is applied to a new Graph Oriented Vision-Language Embedding (GrOVLE), which we adapt from Word2Vec using WordNet and an original visual-language graph built from Visual Genome, providing a ready-to-use vision-language embedding.</p>
+          <center>
+          <a
+          href="https://arxiv.org/abs/1908.06327" target="_blank" class="btn btn-danger" role="button">PDF</a>
+          <!--<a
+          href="" target="_blank" class="btn btn-danger" role="button">DEMO</a>-->
+          </center>
+          </div>
+
+    <hr class="soften"></hr>
+
+        
+	  <div class="project-page">
+                <a name="overview"></a/>
+                <center><h2>Overview</h2>
+                <p> Here we give an overview of our findings. For more detailed analysis and experimental results, please refer to the paper. </p>
+</center>		
+<br>
+                
+                <img width="65%" alt="questions" src="questions.png"></img><img width="35%" alt="Model variants" src="modelvariants.png"></img>
+ <br>
+<br>
+                <p>How should language features be constructed for a vision-language task? We provide a side by side comparison of how word-level and sentence-level embeddings, simple and more complex language models, and fine-tuning and post-processing vectors impact performance. The language model variants used in our experiments include: mean pooling of embeddings (MP) which is then passed to fully connected layers (FC), a LSTM fed a single embedding at a time followed by a fully connected layer, or a self-attention model which builds a weighted context sum (WS) before being passed to a pair of fully connected layers.</p>
+                
+	
+		<br>
+                <center>
+                <img width="90%" alt="Results summary" src="results.png"></img> </center>
+<br>
+<br>   
+             <p>Average rank is defined using each tasks' best performing model. Variance is defined as the average difference between the best and worst performance of the fine-tuned language model options (e.g. Average Embedding + ft, Self-Attention + ft, LSTM + ft). Note that variance rank is listed from lowest to highest, e.g. from-scratch embeddings have highest variance. If the top embedding per task is a tie, both are provided in the right most column. For the tasks InferSent and BERT operate on, they would land between 7th and 8th place for average rank; average variance is N/A. Note that average variance is not provided for multi-task trained GrOVLE as it was created with the best model for each task.</p>
+          </div>
+<br>                
+
+          <div class="project-page">
+              <a name="dataset"></a>
+              <h2>Open Source Embeddings</h2>
+              <p>Here we provide four embedding variants: the single task trained GrOVLE (solely adapted using knowledge bases WordNet and our Visual Genome visual-language graph),
+the five task multi-task trained GrOVLE, and the PCA reduced HGLMM Fisher vectors (300-D, 6K-D).
+              </p>
+<p>The vectors are provided in text files, numbers are space separated. Each word vector is separated with a new line character. Please note that not all vocabulary words for a given task 
+may exist within these files. If you need words outside of these files, you can initialize them with a zero or random initialization before use during training.</p>
+              <a href="https://drive.google.com/open?id=17uFwCHpXgCU76OK3wVdY5-SQBNehIYyR" target="_blank" class="btn btn-danger" role="button">GrOVLE</a>
+              <a href="https://drive.google.com/file/d/1XhzBdaSwsDksUqrixIZSbr0D_fzXmAk5/view?usp=sharing" target="_blank" class="btn btn-danger" role="button">Multi-task trained GrOVLE</a>
+              <a href="https://drive.google.com/file/d/1ay-dgJ3uci4p2KJNbwkngQg2eq0C3s99/view?usp=sharing" target="_blank" class="btn btn-danger" role="button">HGLMM 300-D</a>
+              <a href="https://drive.google.com/file/d/1nrIKvGMxG_HtZJ9scsGh308SWn2DfgKp/view?usp=sharing" target="_blank" class="btn btn-danger" role="button">HGLMM 6K-D</a> 
+          </div>
+
+          <div class="project-page">
+                <!--<a name="code"></a>-->
+                <h2> Code </h2>
+                <p>Below are code bases used to perform the experiments we present in our paper. We also link below to the retrofitting code we 
+                   used to build the single task trained GrOVLE. Both the QA R-CNN model for phrase
+                grounding and the TGN model for text-to-clip were internal implementations. QA R-CNN code will be released shortly and updated accordingly here.
+                </p>
+                <ul> 
+                   <li> Retrofitting Word Embeddings
+                        <ul><li><a href="https://github.com/mfaruqui/retrofitting">Retrofitting</a></ul>
+                   </li>
+                   <li> Image-Sentence Retrieval
+                          <ul> 
+                             <li><a href="https://github.com/BryanPlummer/Two_branch_network">Embedding Network</a></li>
+                             <li><a href="https://github.com/kuanghuei/SCAN">Stacked Cross Attention Network (SCAN)</a></li>
+                          </ul>
+                   </li>
+                   <li> Phrase Grounding
+                        <ul>
+                             <li><a href="https://github.com/BryanPlummer/cite">CITE Network</a></li>
+                             <li><a href="https://github.com/BryanPlummer/phrase_detection">Query Adaptive R-CNN</a></li>
+                          </ul>
+
+                   </li>
+                   <li> Text-to-Clip 
+                        <ul>
+                             <li><a href="https://github.com/BryanPlummer/cite">CITE Network</a></li>
+                             <!--<li><a href="">Temporal GroundNet (TGN)</a></li>-->
+                          </ul>
+
+                   </li>
+                   <li> Image Captioning 
+                        <ul>
+                             <li><a href="https://github.com/yunjey/pytorch-tutorial"> Show-and-Tell Neural Image Captioning (NIC)</a></li>
+                             <li><a href="https://github.com/chenxinpeng/ARNet"> AutoReconstructor Network (ARNet)</a></li>
+                             <li><a href="https://github.com/ruotianluo/self-critical.pytorch">Bottom-Up Top-Down (BUTD) Attention Model</a></li>
+                          </ul>
+
+                   </li>
+                   <li> Visual Question Answering 
+                       <ul>
+                             <li><a href="https://github.com/ronghanghu/n2nmn"> End-to-End Module Networks (EtEMN) </a></li>
+                             <li><a href="https://github.com/jnhwkim/ban-vqa"> Bilinear Attention Network (BAN) </a></li>
+                          </ul>
+
+                   </li>
+                </ul>
+          </div>
+
+          <div class="project-page">
+              <a name="refs"></a>
+              <h2>Reference</h2>
+              <p class="lead"> If you find this useful in your work please consider citing: </p>
+              <div class="highlight">
+              <pre> <code> 
+                @inproceedings{burns2019iccv, 
+                title={{L}anguage {F}eatures {M}atter: {E}ffective Language Representations for Vision-Language Tasks},
+                author={Andrea Burns and Reuben Tan and Kate Saenko and Stan Sclaroff and Bryan A. Plummer}, 
+                booktitle={The IEEE International Conference on Computer Vision (ICCV)}, 
+                year={2019} 
+                }          
+              </code> </pre>
+              </div>
+          </div>
+
+          <div class="project-page">
+              <a name="contact"></a>
+              <h2>Contact</h2>
+              <p>aburns4 [at] bu [dot] edu</p>
+          </div> 
+    </div> <!--container-->
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>-->
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <!--<script src="js/bootstrap.min.js"></script>
+    <script src="js/toggle.js"></script> -->
+  </body> 
+</html>
